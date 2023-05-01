@@ -1,28 +1,20 @@
 'use client';
 
-import './nav.css';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import cn from 'clsx';
-import { getNavData, navItemChildIsActive } from '@/utils/main';
-
-const navItemWithChildrenIsActive = (
-  itemId: number,
-  itemChildren: { label: string; href: string; pageName: string }[],
-  activeMenuItemId: number | null,
-  pageName: string
-) => {
-  const childIsActive = navItemChildIsActive(pageName, itemChildren);
-  return childIsActive || activeMenuItemId === itemId;
-};
+import { getNavData } from '@/utils/main';
+import { usePathname } from 'next/navigation';
+import { getIfActiveMenuItem } from './nav.utils';
 
 type Props = {
   lang: string;
-  pageName: string;
 }
 
-export const Nav = ({ lang, pageName }: Props) => {
+export const Nav = ({ lang }: Props) => {
   const [activeMenuItemId, setActiveMenuItemId] = useState<number| null>(null);
+
+  const pathname = usePathname();
 
   const navData = getNavData(lang);
 
@@ -57,9 +49,7 @@ export const Nav = ({ lang, pageName }: Props) => {
             <li key={item.id} className={cn('nav__item', {
               'nav__item--with-opened-children': activeMenuItemId === item.id,
               'nav__item--with-children': !!item.children,
-              'nav__item--active': item.children
-                ? navItemWithChildrenIsActive(item.id, item.children, activeMenuItemId, pageName)
-                : item.pageName === pageName
+              'nav__item--active': getIfActiveMenuItem(item, activeMenuItemId, pathname)
             })}>
               {
                 item.children
@@ -80,7 +70,7 @@ export const Nav = ({ lang, pageName }: Props) => {
                             <li
                               key={subitem.href}
                               className={cn('nav__subitem', {
-                                'nav__subitem--active': subitem.pageName === pageName
+                                'nav__subitem--active': pathname.includes(subitem.pageName)
                               })}
                             >
                               <Link href={subitem.href} className="nav__sublink">

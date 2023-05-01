@@ -4,13 +4,11 @@ import cn from 'clsx';
 import Link from 'next/link';
 import { useRouter, usePathname } from 'next/navigation';
 import { dictionary } from '@/lang/main';
-import './lang-search-nav.css';
 import { pageLinks, NETLIFY_LOCALE_COOKIE_NAME } from '@/constants/main';
 import { SearchIcon } from '@/icons/search';
 
 type Props = {
   lang: string;
-  pageName: string;
 }
 
 const setNetlifyLangCookie = (lang: string) => {
@@ -18,7 +16,7 @@ const setNetlifyLangCookie = (lang: string) => {
   document.cookie = `${NETLIFY_LOCALE_COOKIE_NAME}=${lang};path=/;max-age=${year}`
 };
 
-export const LangSearchNav = ({ lang, pageName }: Props) => {
+export const LangSearchNav = ({ lang }: Props) => {
   const router = useRouter();
   const pathname = usePathname();
 
@@ -30,6 +28,8 @@ export const LangSearchNav = ({ lang, pageName }: Props) => {
     router.push(newLocation);
   }
 
+  const isActive =  pathname.includes(pageLinks.search);
+
   return (
     <div className="lang-search-nav">
       <ul className="lang-search-nav__list">
@@ -40,7 +40,7 @@ export const LangSearchNav = ({ lang, pageName }: Props) => {
           {dictionary.CHANGE_LOCALE[lang]}
         </li>
         <li className={cn('lang-search-nav__item lang-search-nav__item--search', {
-          'lang-search-nav__item--active': pageName === pageLinks.search
+          'lang-search-nav__item--active': isActive
         })}>
           <i className="lang-search-nav__icon">
             <SearchIcon />

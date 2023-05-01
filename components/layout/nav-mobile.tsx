@@ -1,22 +1,23 @@
 'use client';
 
-import './nav-mobile.css';
 import {useState, useEffect, useRef} from 'react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { MenuIcon } from '@/icons/menu';
 import cn from 'clsx';
-import { getNavData, navItemChildIsActive } from '@/utils/main';
+import { getIfPathnameEqualsItemHref, getNavData } from '@/utils/main';
 import { LangSearchNav } from './lang-search-nav';
 
 type Props = {
   lang: string;
-  pageName: string;
 }
 
-export const NavMobile = ({ lang, pageName }: Props) => {
+export const NavMobile = ({ lang }: Props) => {
   const [isNavVisible, setNavVisibility] = useState(false);
   const navMobileTrigger = useRef<HTMLDivElement | null>(null);
   const navMobileBody = useRef<HTMLDivElement | null>(null);
+
+  const pathname = usePathname();
 
   const navData = getNavData(lang);
   const toggleNav = () => setNavVisibility((isVisible) => !isVisible);
@@ -66,7 +67,8 @@ export const NavMobile = ({ lang, pageName }: Props) => {
                 <li key={item.id} className={cn('nav-mobile__item', {
                   'nav-mobile__item--with-children': !!item.children,
                   'nav-mobile__item--active': item.children ?
-                    navItemChildIsActive(pageName, item.children) : item.pageName === pageName
+                    item.children.some(child => pathname.includes(child.pageName)) :
+                    getIfPathnameEqualsItemHref(pathname, item.href)
                 })}>
                   {
                     item.children
@@ -81,7 +83,7 @@ export const NavMobile = ({ lang, pageName }: Props) => {
                                 <li
                                   key={subitem.href}
                                   className={cn('nav-mobile__subitem', {
-                                    'nav-mobile__subitem--active': subitem.pageName === pageName
+                                    'nav-mobile__subitem--active': pathname.includes(subitem.pageName)
                                   })}
                                 >
                                   <Link href={subitem.href} className="nav-mobile__sublink">
@@ -107,7 +109,6 @@ export const NavMobile = ({ lang, pageName }: Props) => {
         <div className="nav-mobile__utils">
           <LangSearchNav
             lang={lang}
-            pageName={pageName}
           />
         </div>
       </div>

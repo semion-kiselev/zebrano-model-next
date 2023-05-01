@@ -3,8 +3,8 @@ import { langs, pageLinks } from "@/constants/main"
 import { Metadata } from "next";
 
 export const generateMetadata = ({ params }: { params: { lang: string } }): Promise<Metadata> => Promise.resolve({
-  title: dictionary.WHERE_TO_BUY_HEAD_TITLE[params.lang],
-  description: dictionary.WHERE_TO_BUY_HEAD_DESCRIPTION[params.lang]
+  title: dictionary.HOME_HEAD_TITLE[params.lang],
+  description: dictionary.HOME_HEAD_DESCRIPTION[params.lang]
 });
 
 export const generateStaticParams = async () => {
@@ -20,7 +20,7 @@ type Props = {
 const WhereToBuy = ({ params }: Props) => {
   const { lang } = params;
   return (
-    <div className="red">{JSON.stringify(params)}</div>
+    <div className="red">Index {lang}</div>
   );
 };
 

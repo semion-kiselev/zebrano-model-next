@@ -1,12 +1,12 @@
 import { dictionary } from '@/lang/main';
 import { pageLinks } from '@/constants/main';
 
-export const navItemChildIsActive = (
-  pageName: string,
-  children: { label: string; href: string; pageName: string }[]
-) => children.some(child => child.pageName === pageName);
-
-// export const getNormalizedData = (data) => data.edges.map(({node}) => node);
+export const getIfPathnameEqualsItemHref = (pathname: string, href: string) => {
+    if (pathname[pathname.length - 1] === '/') {
+        return pathname === href;
+    }
+    return pathname === href.slice(0, -1);
+};
 
 export const getNavData = (lang: string) => ([
     {
